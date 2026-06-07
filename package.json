@@ -1,0 +1,28 @@
+{
+  "name": "selection-translator",
+  "version": "1.0.0",
+  "description": "划词翻译浏览器插件，基于 AI 翻译，支持自定义 API 配置",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [
+    "chrome-extension",
+    "translation",
+    "ai"
+  ],
+  "author": "ZephyRTy",
+  "license": "MIT",
+  "devDependencies": {
+    "@crxjs/vite-plugin": "*",
+    "@types/chrome": "*",
+    "@types/node": "^25.9.2",
+    "typescript": "*",
+    "vite": "*"
+  },
+  "dependencies": {
+    "@fission-ai/openspec": "*"
+  }
+}
