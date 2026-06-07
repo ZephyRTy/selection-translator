@@ -23,6 +23,7 @@
     "vite": "*"
   },
   "dependencies": {
-    "@fission-ai/openspec": "*"
+    "@fission-ai/openspec": "*",
+    "sharp": "^0.34.5"
   }
 }
