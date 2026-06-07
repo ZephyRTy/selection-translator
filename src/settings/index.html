@@ -32,8 +32,12 @@
 
       <div class="form-group">
         <label for="model">Model</label>
-        <input type="text" id="model" placeholder="gpt-4o-mini" autocomplete="off">
-        <span class="hint">模型名称（如 gpt-4o-mini、deepseek-chat、gpt-4o）</span>
+        <div class="input-with-btn">
+          <input type="text" id="model" placeholder="gpt-4o-mini" autocomplete="off" list="modelList">
+          <datalist id="modelList"></datalist>
+          <button type="button" id="fetchModelsBtn" class="btn btn-sm btn-outline">获取模型</button>
+        </div>
+        <span class="hint">手动填写或点击「获取模型」自动拉取 API 可用模型列表</span>
       </div>
 
       <div class="form-group">
