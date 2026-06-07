@@ -1,6 +1,7 @@
 let iconHost: HTMLDivElement | null = null;
 let popupHost: HTMLDivElement | null = null;
 let currentText: string | null = null;
+let savedRect: DOMRect | null = null;
 
 const ICON_HTML = `
 <style>
@@ -202,19 +203,20 @@ function handleSelection(event: MouseEvent) {
 
   const truncated = text.length > MAX_TEXT_LENGTH ? text.slice(0, MAX_TEXT_LENGTH) : text;
   currentText = truncated;
+  savedRect = selection.getRangeAt(0).getBoundingClientRect();
   removePopup();
-  showIcon(selection);
+  showIcon();
 }
 
 function isInsideWidget(target: HTMLElement): boolean {
   return !!(iconHost && iconHost.contains(target)) || !!(popupHost && popupHost.contains(target));
 }
 
-function showIcon(selection: Selection) {
+function showIcon() {
+  if (!savedRect) return;
   removeIcon();
 
-  const range = selection.getRangeAt(0);
-  const rect = range.getBoundingClientRect();
+  const rect = savedRect;
 
   iconHost = document.createElement('div');
   iconHost.id = '__trans-icon-host';
@@ -232,13 +234,13 @@ function showIcon(selection: Selection) {
   shadow.getElementById('transIcon')!.addEventListener('click', (e) => {
     e.stopPropagation();
     removeIcon();
-    showPopup(currentText!, selection);
+    showPopup(currentText!);
   });
 }
 
-function showPopup(text: string, selection: Selection) {
-  const range = selection.getRangeAt(0);
-  const rect = range.getBoundingClientRect();
+function showPopup(text: string) {
+  if (!savedRect) return;
+  const rect = savedRect;
   const x = rect.left + rect.width / 2;
   const y = rect.bottom + 8;
 
@@ -341,10 +343,12 @@ document.addEventListener('click', (event) => {
   const target = event.target as Node;
   if (iconHost && !iconHost.contains(target)) {
     removeIcon();
+    savedRect = null;
   }
   if (popupHost && !popupHost.contains(target)) {
     removePopup();
     currentText = null;
+    savedRect = null;
   }
 });
 
@@ -353,5 +357,6 @@ document.addEventListener('keydown', (event) => {
     removeIcon();
     removePopup();
     currentText = null;
+    savedRect = null;
   }
 });
