@@ -210,19 +210,11 @@ function isInsideWidget(target: HTMLElement): boolean {
   return !!(iconHost && iconHost.contains(target)) || !!(popupHost && popupHost.contains(target));
 }
 
-function getPosition(selection: Selection): { x: number; y: number } {
-  const range = selection.getRangeAt(0);
-  const rect = range.getBoundingClientRect();
-  return {
-    x: rect.right + window.scrollX,
-    y: rect.top + window.scrollY,
-  };
-}
-
 function showIcon(selection: Selection) {
   removeIcon();
 
-  const { x, y } = getPosition(selection);
+  const range = selection.getRangeAt(0);
+  const rect = range.getBoundingClientRect();
 
   iconHost = document.createElement('div');
   iconHost.id = '__trans-icon-host';
@@ -231,10 +223,10 @@ function showIcon(selection: Selection) {
   document.body.appendChild(iconHost);
 
   iconHost.style.cssText = `
-    position: absolute;
+    position: fixed;
     z-index: 2147483646;
-    left: ${x + 4}px;
-    top: ${y - 28}px;
+    left: ${rect.right + 4}px;
+    top: ${rect.top - 28}px;
   `;
 
   shadow.getElementById('transIcon')!.addEventListener('click', (e) => {
@@ -248,7 +240,7 @@ function showPopup(text: string, selection: Selection) {
   const range = selection.getRangeAt(0);
   const rect = range.getBoundingClientRect();
   const x = rect.left + rect.width / 2;
-  const y = rect.bottom + window.scrollY + 8;
+  const y = rect.bottom + 8;
 
   removePopup();
 
@@ -260,7 +252,7 @@ function showPopup(text: string, selection: Selection) {
   bindPopupEvents(shadow);
 
   popupHost.style.cssText = `
-    position: absolute;
+    position: fixed;
     z-index: 2147483647;
     left: ${x}px;
     top: ${y}px;
