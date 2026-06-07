@@ -7,7 +7,11 @@ export async function translate(text: string): Promise<string> {
     throw new Error('API Key 未配置，请在插件选项中设置。');
   }
 
-  const systemPrompt = config.systemPrompt.replace('{target}', targetLangLabel(config.targetLang));
+  const basePrompt = config.systemPrompt.replace('{target}', targetLangLabel(config.targetLang));
+  const thinkingSuffix = config.enableThinking
+    ? '\n\n请先仔细分析原文的语境、语义和隐含含义，然后再给出准确流畅的翻译。只输出译文，分析过程不要输出。'
+    : '';
+  const systemPrompt = basePrompt + thinkingSuffix;
 
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 15000);

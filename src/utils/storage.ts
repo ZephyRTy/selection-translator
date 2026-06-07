@@ -4,6 +4,7 @@ export interface AppConfig {
   model: string;
   systemPrompt: string;
   targetLang: string;
+  enableThinking: boolean;
 }
 
 const defaultConfig: AppConfig = {
@@ -12,6 +13,7 @@ const defaultConfig: AppConfig = {
   model: 'gpt-4o-mini',
   systemPrompt: '你是一个翻译助手，将用户输入的文本翻译成{target}，只输出译文不要解释。',
   targetLang: 'zh-CN',
+  enableThinking: false,
 };
 
 export async function getConfig(): Promise<AppConfig> {

@@ -10,6 +10,7 @@ const apiKeyInput = document.getElementById('apiKey') as HTMLInputElement;
 const fetchModelsBtn = document.getElementById('fetchModelsBtn') as HTMLButtonElement;
 const modelInput = document.getElementById('model') as HTMLInputElement;
 const modelList = document.getElementById('modelList') as HTMLDataListElement;
+const thinkingToggle = document.getElementById('enableThinking') as HTMLInputElement;
 
 async function init() {
   const config = await getConfig();
@@ -18,6 +19,7 @@ async function init() {
   (document.getElementById('model') as HTMLInputElement).value = config.model;
   (document.getElementById('systemPrompt') as HTMLTextAreaElement).value = config.systemPrompt;
   (document.getElementById('targetLang') as HTMLSelectElement).value = config.targetLang;
+  thinkingToggle.checked = config.enableThinking;
 }
 
 function readForm(): AppConfig {
@@ -27,6 +29,7 @@ function readForm(): AppConfig {
     model: (document.getElementById('model') as HTMLInputElement).value.trim(),
     systemPrompt: (document.getElementById('systemPrompt') as HTMLTextAreaElement).value.trim(),
     targetLang: (document.getElementById('targetLang') as HTMLSelectElement).value,
+    enableThinking: thinkingToggle.checked,
   };
 }
 
