@@ -57,7 +57,7 @@ const POPUP_HTML = `
     animation: fadeIn 0.15s ease-out;
     position: relative;
   }
-  .popup::before {
+  .popup::after {
     content: '';
     position: absolute;
     top: -8px;
@@ -69,6 +69,14 @@ const POPUP_HTML = `
     border-right: 8px solid transparent;
     border-bottom: 8px solid #ffffff;
     filter: drop-shadow(0 -1px 1px rgba(0, 0, 0, 0.04));
+  }
+  .popup.flip::before { display: none; }
+  .popup.flip::after {
+    top: auto;
+    bottom: -8px;
+    border-bottom: none;
+    border-top: 8px solid #ffffff;
+    filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.04));
   }
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(4px); }
@@ -217,6 +225,16 @@ function showIcon() {
   removeIcon();
 
   const rect = savedRect;
+  const ICON_SIZE = 32;
+
+  let left = rect.right + 4;
+  let top = rect.top - 28;
+
+  if (left + ICON_SIZE > window.innerWidth - 8) {
+    left = rect.left - ICON_SIZE - 4;
+  }
+  if (left < 4) left = 4;
+  if (top < 4) top = rect.bottom + 4;
 
   iconHost = document.createElement('div');
   iconHost.id = '__trans-icon-host';
@@ -227,8 +245,8 @@ function showIcon() {
   iconHost.style.cssText = `
     position: fixed;
     z-index: 2147483646;
-    left: ${rect.right + 4}px;
-    top: ${rect.top - 28}px;
+    left: ${left}px;
+    top: ${top}px;
   `;
 
   shadow.getElementById('transIcon')!.addEventListener('click', (e) => {
@@ -241,8 +259,25 @@ function showIcon() {
 function showPopup(text: string) {
   if (!savedRect) return;
   const rect = savedRect;
-  const x = rect.left + rect.width / 2;
-  const y = rect.bottom + 8;
+  const POPUP_WIDTH = 360;
+  const GAP = 8;
+  const PADDING = 8;
+
+  let left = rect.left + rect.width / 2 - POPUP_WIDTH / 2;
+  let top = rect.bottom + GAP;
+  let flip = false;
+
+  const estimatedHeight = 200;
+  if (top + estimatedHeight > window.innerHeight - PADDING) {
+    top = rect.top - estimatedHeight - GAP;
+    flip = true;
+  }
+  if (top < PADDING) top = PADDING;
+
+  if (left + POPUP_WIDTH > window.innerWidth - PADDING) {
+    left = window.innerWidth - POPUP_WIDTH - PADDING;
+  }
+  if (left < PADDING) left = PADDING;
 
   removePopup();
 
@@ -256,10 +291,13 @@ function showPopup(text: string) {
   popupHost.style.cssText = `
     position: fixed;
     z-index: 2147483647;
-    left: ${x}px;
-    top: ${y}px;
-    transform: translateX(-50%);
+    left: ${left}px;
+    top: ${top}px;
   `;
+
+  if (flip) {
+    getEl(shadow, 'popup').classList.add('flip');
+  }
 
   getEl(shadow, 'source').textContent = text;
   updatePopupState(shadow, 'loading');
